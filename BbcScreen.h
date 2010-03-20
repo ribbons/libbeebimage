@@ -27,6 +27,7 @@ private:
 	unsigned char mode_;
 	unsigned char palette_[PALETTE_SIZE];
 	unsigned char* screenStorage_;
+	HBITMAP bitmap_;
 
 	void genBitmap04(HDC bitmapDC);
 	void genBitmap15(HDC bitmapDC);
@@ -42,5 +43,6 @@ public:
 	int getScreenHeight();
 	void setColour(unsigned char colour, unsigned char value);
 	unsigned char getColour(unsigned char colour);
-	HBITMAP generateBitmap(HWND hWnd);
+	void generateBitmap(HWND hWnd);
+	HBITMAP getBitmap();
 };

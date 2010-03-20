@@ -128,18 +128,18 @@ unsigned char BbcScreen::getColour(unsigned char colour)
 	return palette_[colour];
 }
 
-HBITMAP BbcScreen::generateBitmap(HWND hWnd)
+void BbcScreen::generateBitmap(HWND hWnd)
 {
 	// Get the handle of the screen DC & create a compatible bitmap
 	HDC screenDC = GetDC(hWnd);
-	HBITMAP bitmap = CreateCompatibleBitmap(screenDC, screenWidth_, screenHeight_);
+	bitmap_ = CreateCompatibleBitmap(screenDC, screenWidth_, screenHeight_);
 
 	// Create a DC for the bitmap & release the screen DC
 	HDC bitmapDC = CreateCompatibleDC(screenDC);
 	ReleaseDC(hWnd, screenDC);
 
 	// Save handle of the old bitmap & select new bitmap
-	HBITMAP oldBitmap = SelectBitmap(bitmapDC, bitmap);
+	HBITMAP oldBitmap = SelectBitmap(bitmapDC, bitmap_);
 	
 	switch(mode_)
 	{
@@ -159,8 +159,6 @@ HBITMAP BbcScreen::generateBitmap(HWND hWnd)
 	// Select the previous bitmap & release the DC
 	SelectBitmap(bitmapDC, oldBitmap);
 	DeleteDC(bitmapDC);
-
-	return bitmap;
 }
 
 // MODE 0 or MODE 4 picture
@@ -310,4 +308,9 @@ COLORREF BbcScreen::convColour(int bbcColour)
 			// Map flashing colours to grey
 			return RGB(128, 128, 128);
 	}
+}
+
+HBITMAP BbcScreen::getBitmap()
+{
+	return bitmap_;
 }
