@@ -8,6 +8,7 @@ BbcScreen::BbcScreen(int screenMemSize)
 	screenMemSize_ = screenMemSize;
 	screenStorage_ = new unsigned char[screenMemSize];
 
+	bitmap_ = NULL;
 	setMode(1);
 }
 
@@ -130,6 +131,12 @@ unsigned char BbcScreen::getColour(unsigned char colour)
 
 void BbcScreen::generateBitmap(HWND hWnd)
 {
+	// Clean up the previous bitmap if there is one
+	if(bitmap_ != NULL)
+	{
+		DeleteBitmap(bitmap_);
+	}
+	
 	// Get the handle of the screen DC & create a compatible bitmap
 	HDC screenDC = GetDC(hWnd);
 	bitmap_ = CreateCompatibleBitmap(screenDC, screenWidth_, screenHeight_);
