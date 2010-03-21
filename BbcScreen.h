@@ -1,8 +1,5 @@
 #pragma once
 
-#define BV_WIDTH  640           // width  of "screen" (client area)
-#define BV_DEFAULT_HEIGHT 512   // default height of "screen" (client area)
-
 #define BBC_WIDTH0 640          // width of BBC MODE0 screen
 #define BBC_WIDTH1 320          //       "      MODE1   "   
 #define BBC_WIDTH2 160          //       "      MODE2   "   
@@ -13,8 +10,7 @@
 #define BBC_XBLKS2 80			//           "          MODE 2   "   
 #define BBC_XBLKS4 40			//           "          MODE 4   "   
 #define BBC_XBLKS5 40			//           "          MODE 5   "   
-#define BBC_DEFAULT_HEIGHT 256  // The default height of a BBC image
-#define BYTES 8                 // number bytes in a block
+#define BLOCK_BYTES 8           // number bytes in a block
 #define PALETTE_SIZE 16         // Size of the BBC palette
 #define DEFAULT_MODE 1          // Default screen mode
 

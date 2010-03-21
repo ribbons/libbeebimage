@@ -34,7 +34,7 @@ void BbcScreen::setMode(int mode)
 	}
 
 	mode_ = mode;
-	int blocksInFile = screenMemSize_ / BYTES;
+	int blocksInFile = screenMemSize_ / BLOCK_BYTES;
 
 	switch(mode_)
 	{
@@ -66,7 +66,7 @@ void BbcScreen::setMode(int mode)
 	}
 
 	// Calculate how tall the image is based on the number of rows of blocks.
-	screenHeight_ = blockRows_ * BYTES;
+	screenHeight_ = blockRows_ * BLOCK_BYTES;
 
 	// Set the default colour mappings for the mode
 	switch(mode)
@@ -200,7 +200,7 @@ void BbcScreen::genBitmap04(HDC bitmapDC)
    {
 	   for(j = 0; j < nBlocks; j++)
 	   {
-		   for(i = 0; i < BYTES; i++)
+		   for(i = 0; i < BLOCK_BYTES; i++)
 		   {
 			   thisByte = screenStorage_[address];
 
@@ -242,7 +242,7 @@ void BbcScreen::genBitmap15(HDC bitmapDC)
    {
 	   for(j = 0; j < nBlocks; j++)
 	   {
-		   for(i = 0; i < BYTES; i++)
+		   for(i = 0; i < BLOCK_BYTES; i++)
 		   {
 			   thisByte = screenStorage_[address];
 
@@ -281,7 +281,7 @@ void BbcScreen::genBitmap2(HDC bitmapDC)
 
    for(k = 0; k < blockRows_; k++) {
       for(j = 0; j < BBC_XBLKS2; j++) {
-	     for(i = 0; i < BYTES; i++) {
+	     for(i = 0; i < BLOCK_BYTES; i++) {
             thisByte = screenStorage_[address];
 
             index = ((thisByte >> 4) & 8) | ((thisByte >> 3) & 4) | ((thisByte >> 2) & 2) | ((thisByte >> 1) & 1);
