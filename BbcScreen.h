@@ -36,6 +36,7 @@ private:
 
 public:
 	BbcScreen(int screenMemSize);
+	~BbcScreen();
 	void setMode(int mode);
 	unsigned char getMode();
 	void setScreenBit(int address, unsigned char bit);

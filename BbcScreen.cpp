@@ -12,6 +12,18 @@ BbcScreen::BbcScreen(int screenMemSize)
 	setMode(1);
 }
 
+BbcScreen::~BbcScreen()
+{
+	// Free up the screen storage
+	delete []screenStorage_;
+
+	if(bitmap_ != NULL)
+	{
+		// Clean up the bitmap
+		DeleteBitmap(bitmap_);
+	}
+}
+
 void BbcScreen::setMode(int mode)
 {
 	mode = mode % 8;
