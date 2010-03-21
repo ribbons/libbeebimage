@@ -15,7 +15,8 @@
 #define BBC_XBLKS5 40			//           "          MODE 5   "   
 #define BBC_DEFAULT_HEIGHT 256  // The default height of a BBC image
 #define BYTES 8                 // number bytes in a block
-#define PALETTE_SIZE 16
+#define PALETTE_SIZE 16         // Size of the BBC palette
+#define DEFAULT_MODE 1          // Default screen mode
 
 class BbcScreen
 {

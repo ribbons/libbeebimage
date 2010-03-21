@@ -9,7 +9,7 @@ BbcScreen::BbcScreen(int screenMemSize)
 	screenStorage_ = new unsigned char[screenMemSize];
 
 	bitmap_ = NULL;
-	setMode(1);
+	setMode(DEFAULT_MODE);
 }
 
 BbcScreen::~BbcScreen()
