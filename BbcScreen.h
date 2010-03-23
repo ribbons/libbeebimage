@@ -36,7 +36,7 @@ public:
 	~BbcScreen();
 	void setMode(int mode);
 	unsigned char getMode();
-	void setScreenBit(int address, unsigned char bit);
+	void setScreenByte(int address, unsigned char byte);
 	int getScreenWidth();
 	int getScreenHeight();
 	void setColour(unsigned char colour, unsigned char value);

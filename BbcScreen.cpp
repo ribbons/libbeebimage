@@ -102,14 +102,14 @@ unsigned char BbcScreen::getMode()
 	return mode_;
 }
 
-void BbcScreen::setScreenBit(int address, unsigned char bit)
+void BbcScreen::setScreenByte(int address, unsigned char byte)
 {
 	if(address >= screenMemSize_)
 	{
 		throw std::invalid_argument("address out of bounds");
 	}
 
-	screenStorage_[address] = bit;
+	screenStorage_[address] = byte;
 }
 
 int BbcScreen::getScreenWidth()
