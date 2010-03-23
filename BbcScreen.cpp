@@ -8,6 +8,12 @@ BbcScreen::BbcScreen(int screenMemSize)
 	screenMemSize_ = screenMemSize;
 	screenStorage_ = new unsigned char[screenMemSize];
 
+	// Initialise the screen memory to all zeros (to match BBC)
+	for(int init = 0; init < screenMemSize; init++)
+	{
+		screenStorage_[init] = 0;
+	}
+
 	bitmap_ = NULL;
 	setMode(DEFAULT_MODE);
 }
