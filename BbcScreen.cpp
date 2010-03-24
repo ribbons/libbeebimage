@@ -39,7 +39,7 @@ void BbcScreen::setMode(int mode)
 		throw std::invalid_argument("modes 3, 6 and 7 are not supported");
 	}
 
-	mode_ = mode;
+	mode_ = (unsigned char)mode;
 	int blocksInFile = screenMemSize_ / BLOCK_BYTES;
 
 	switch(mode_)
@@ -90,7 +90,7 @@ void BbcScreen::setMode(int mode)
 			palette_[3] = 7;
 			break;
 		case 2:
-			for (int i = 0; i < 8; i++) {
+			for(unsigned char i = 0; i < 8; i++) {
 				palette_[i] = i;
 			}
 			break;
