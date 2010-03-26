@@ -3,7 +3,11 @@
 
 BbcScreen::BbcScreen(int screenMemSize)
 {
-	// TODO: Sensible bounds checking
+	if(screenMemSize > MAX_MEMSIZE)
+	{
+		throw std::invalid_argument("Requested screen memory size too large");
+	}
+
 	screenMemSize_ = screenMemSize;
 	screenStorage_ = new unsigned char[screenMemSize];
 
