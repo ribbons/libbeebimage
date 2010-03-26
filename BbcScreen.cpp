@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "BbcScreen.h"
-#include <stdexcept>
 
 BbcScreen::BbcScreen(int screenMemSize)
 {
