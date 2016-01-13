@@ -21,190 +21,190 @@
 
 BbcScreen::BbcScreen(int screenMemSize)
 {
-	if(screenMemSize > MAX_MEMSIZE)
-	{
-		throw std::invalid_argument("Requested screen memory size too large");
-	}
+    if(screenMemSize > MAX_MEMSIZE)
+    {
+        throw std::invalid_argument("Requested screen memory size too large");
+    }
 
-	screenMemSize_ = screenMemSize;
-	screenStorage_ = new unsigned char[screenMemSize];
+    screenMemSize_ = screenMemSize;
+    screenStorage_ = new unsigned char[screenMemSize];
 
-	// Initialise the screen memory to all zeros (to match BBC)
-	for(int init = 0; init < screenMemSize; init++)
-	{
-		screenStorage_[init] = 0;
-	}
+    // Initialise the screen memory to all zeros (to match BBC)
+    for(int init = 0; init < screenMemSize; init++)
+    {
+        screenStorage_[init] = 0;
+    }
 
-	bitmap_ = NULL;
-	setMode(DEFAULT_MODE);
+    bitmap_ = NULL;
+    setMode(DEFAULT_MODE);
 }
 
 BbcScreen::~BbcScreen()
 {
-	// Free up the screen storage
-	delete []screenStorage_;
+    // Free up the screen storage
+    delete []screenStorage_;
 
-	if(bitmap_ != NULL)
-	{
-		// Clean up the bitmap
-		DeleteBitmap(bitmap_);
-	}
+    if(bitmap_ != NULL)
+    {
+        // Clean up the bitmap
+        DeleteBitmap(bitmap_);
+    }
 }
 
 void BbcScreen::setMode(int mode)
 {
-	mode = mode % 8;
-	
-	if(mode == 3 || mode == 6 || mode == 7)
-	{
-		throw std::invalid_argument("modes 3, 6 and 7 are not supported");
-	}
+    mode = mode % 8;
 
-	mode_ = (unsigned char)mode;
-	int blocksInFile = screenMemSize_ / BLOCK_BYTES;
+    if(mode == 3 || mode == 6 || mode == 7)
+    {
+        throw std::invalid_argument("modes 3, 6 and 7 are not supported");
+    }
 
-	switch(mode_)
-	{
-		case 0:
-			screenWidth_ = BBC_WIDTH0;
-			blockRows_ = blocksInFile / BBC_XBLKS0;
-			break;
-		case 1:
-			screenWidth_ = BBC_WIDTH1;
-			blockRows_ = blocksInFile / BBC_XBLKS1;
-			break;
-		case 2:
-			screenWidth_ = BBC_WIDTH2;
-			blockRows_ = blocksInFile / BBC_XBLKS2;
-			break;
-		case 4:
-			screenWidth_ = BBC_WIDTH4;
-			blockRows_ = blocksInFile / BBC_XBLKS4;
-			break;
-		case 5:
-			screenWidth_ = BBC_WIDTH5;
-			blockRows_ = blocksInFile / BBC_XBLKS5;
-			break;
-	}
+    mode_ = (unsigned char)mode;
+    int blocksInFile = screenMemSize_ / BLOCK_BYTES;
 
-	if(blockRows_ == 0) {
-		// The screen memory doesn't have even one row of blocks
-		throw std::runtime_error("Allocated screen too small");
-	}
+    switch(mode_)
+    {
+        case 0:
+            screenWidth_ = BBC_WIDTH0;
+            blockRows_ = blocksInFile / BBC_XBLKS0;
+            break;
+        case 1:
+            screenWidth_ = BBC_WIDTH1;
+            blockRows_ = blocksInFile / BBC_XBLKS1;
+            break;
+        case 2:
+            screenWidth_ = BBC_WIDTH2;
+            blockRows_ = blocksInFile / BBC_XBLKS2;
+            break;
+        case 4:
+            screenWidth_ = BBC_WIDTH4;
+            blockRows_ = blocksInFile / BBC_XBLKS4;
+            break;
+        case 5:
+            screenWidth_ = BBC_WIDTH5;
+            blockRows_ = blocksInFile / BBC_XBLKS5;
+            break;
+    }
 
-	// Calculate how tall the image is based on the number of rows of blocks.
-	screenHeight_ = blockRows_ * BLOCK_BYTES;
+    if(blockRows_ == 0) {
+        // The screen memory doesn't have even one row of blocks
+        throw std::runtime_error("Allocated screen too small");
+    }
 
-	// Set the default colour mappings for the mode
-	switch(mode)
-	{
-		case 0:
-		case 4:
-			palette_[0] = 0;
-			palette_[1] = 7;
-			break;
-		case 1:
-		case 5:
-			palette_[0] = 0;
-			palette_[1] = 1;
-			palette_[2] = 3;
-			palette_[3] = 7;
-			break;
-		case 2:
-			for(unsigned char i = 0; i < 8; i++) {
-				palette_[i] = i;
-			}
-			break;
-	}
+    // Calculate how tall the image is based on the number of rows of blocks.
+    screenHeight_ = blockRows_ * BLOCK_BYTES;
+
+    // Set the default colour mappings for the mode
+    switch(mode)
+    {
+        case 0:
+        case 4:
+            palette_[0] = 0;
+            palette_[1] = 7;
+            break;
+        case 1:
+        case 5:
+            palette_[0] = 0;
+            palette_[1] = 1;
+            palette_[2] = 3;
+            palette_[3] = 7;
+            break;
+        case 2:
+            for(unsigned char i = 0; i < 8; i++) {
+                palette_[i] = i;
+            }
+            break;
+    }
 }
 
 unsigned char BbcScreen::getMode()
 {
-	return mode_;
+    return mode_;
 }
 
 void BbcScreen::setScreenByte(int address, unsigned char byte)
 {
-	if(address >= screenMemSize_)
-	{
-		throw std::invalid_argument("address out of bounds");
-	}
+    if(address >= screenMemSize_)
+    {
+        throw std::invalid_argument("address out of bounds");
+    }
 
-	screenStorage_[address] = byte;
+    screenStorage_[address] = byte;
 }
 
 int BbcScreen::getScreenWidth()
 {
-	return screenWidth_;
+    return screenWidth_;
 }
 
 int BbcScreen::getScreenHeight()
 {
-	return screenHeight_;
+    return screenHeight_;
 }
 
 void BbcScreen::setColour(unsigned char colour, unsigned char value)
 {
-	if(colour >= PALETTE_SIZE || colour < 0)
-	{
-		throw std::invalid_argument("Colour out of range");
-	}
+    if(colour >= PALETTE_SIZE || colour < 0)
+    {
+        throw std::invalid_argument("Colour out of range");
+    }
 
-	if(value >= PALETTE_SIZE || value < 0)
-	{
-		throw std::invalid_argument("Value out of range");
-	}
+    if(value >= PALETTE_SIZE || value < 0)
+    {
+        throw std::invalid_argument("Value out of range");
+    }
 
-	palette_[colour] = value;
+    palette_[colour] = value;
 }
 
 unsigned char BbcScreen::getColour(unsigned char colour)
 {
-	if(colour >= PALETTE_SIZE || colour < 0)
-	{
-		throw std::invalid_argument("Colour out of range");
-	}
+    if(colour >= PALETTE_SIZE || colour < 0)
+    {
+        throw std::invalid_argument("Colour out of range");
+    }
 
-	return palette_[colour];
+    return palette_[colour];
 }
 
 void BbcScreen::generateBitmap(HWND hWnd)
 {
-	// Clean up the previous bitmap if there is one
-	if(bitmap_ != NULL)
-	{
-		DeleteBitmap(bitmap_);
-	}
-	
-	// Get the handle of the screen DC & create a compatible bitmap
-	HDC screenDC = GetDC(hWnd);
-	bitmap_ = CreateCompatibleBitmap(screenDC, screenWidth_, screenHeight_);
+    // Clean up the previous bitmap if there is one
+    if(bitmap_ != NULL)
+    {
+        DeleteBitmap(bitmap_);
+    }
 
-	// Create a DC for the bitmap & release the screen DC
-	HDC bitmapDC = CreateCompatibleDC(screenDC);
-	ReleaseDC(hWnd, screenDC);
+    // Get the handle of the screen DC & create a compatible bitmap
+    HDC screenDC = GetDC(hWnd);
+    bitmap_ = CreateCompatibleBitmap(screenDC, screenWidth_, screenHeight_);
 
-	// Save handle of the old bitmap & select new bitmap
-	HBITMAP oldBitmap = SelectBitmap(bitmapDC, bitmap_);
-	
-	switch(mode_)
-	{
-		case 0:
-		case 4:
-			genBitmap04(bitmapDC);
-			break;
-		case 1:
-		case 5:
-			genBitmap15(bitmapDC);
-			break;
-		case 2:
-			genBitmap2(bitmapDC);
-			break;
-	}
+    // Create a DC for the bitmap & release the screen DC
+    HDC bitmapDC = CreateCompatibleDC(screenDC);
+    ReleaseDC(hWnd, screenDC);
 
-	// Select the previous bitmap & release the DC
-	SelectBitmap(bitmapDC, oldBitmap);
-	DeleteDC(bitmapDC);
+    // Save handle of the old bitmap & select new bitmap
+    HBITMAP oldBitmap = SelectBitmap(bitmapDC, bitmap_);
+
+    switch(mode_)
+    {
+        case 0:
+        case 4:
+            genBitmap04(bitmapDC);
+            break;
+        case 1:
+        case 5:
+            genBitmap15(bitmapDC);
+            break;
+        case 2:
+            genBitmap2(bitmapDC);
+            break;
+    }
+
+    // Select the previous bitmap & release the DC
+    SelectBitmap(bitmapDC, oldBitmap);
+    DeleteDC(bitmapDC);
 }
 
 // MODE 0 or MODE 4 picture
@@ -216,7 +216,7 @@ void BbcScreen::genBitmap04(HDC bitmapDC)
    int nX = 0;
    int nY = 0;
    int nBlocks = BBC_XBLKS0;
-   
+
    if(mode_ == 4) {
       nBlocks = BBC_XBLKS4;
    }
@@ -225,27 +225,27 @@ void BbcScreen::genBitmap04(HDC bitmapDC)
 
    for(k = 0; k < blockRows_; k++)
    {
-	   for(j = 0; j < nBlocks; j++)
-	   {
-		   for(i = 0; i < BLOCK_BYTES; i++)
-		   {
-			   thisByte = screenStorage_[address];
+       for(j = 0; j < nBlocks; j++)
+       {
+           for(i = 0; i < BLOCK_BYTES; i++)
+           {
+               thisByte = screenStorage_[address];
 
-			   for(bit = 0; bit < 8; bit++)
-			   {
-				   index = thisByte & 1;
-				   SetPixel(bitmapDC, (nX+7)-bit, nY+i, convColour(index));
-				   thisByte = thisByte >> 1;
-			   }
+               for(bit = 0; bit < 8; bit++)
+               {
+                   index = thisByte & 1;
+                   SetPixel(bitmapDC, (nX+7)-bit, nY+i, convColour(index));
+                   thisByte = thisByte >> 1;
+               }
 
-			   address++;
-		   }
+               address++;
+           }
 
-		   nX = nX + 8;
-	   }
+           nX = nX + 8;
+       }
 
-	   nX = 0;
-	   nY = nY + 8;
+       nX = 0;
+       nY = nY + 8;
    }
 }
 
@@ -267,30 +267,30 @@ void BbcScreen::genBitmap15(HDC bitmapDC)
 
    for(k = 0; k < blockRows_; k++)
    {
-	   for(j = 0; j < nBlocks; j++)
-	   {
-		   for(i = 0; i < BLOCK_BYTES; i++)
-		   {
-			   thisByte = screenStorage_[address];
+       for(j = 0; j < nBlocks; j++)
+       {
+           for(i = 0; i < BLOCK_BYTES; i++)
+           {
+               thisByte = screenStorage_[address];
 
-			   index = ((thisByte >> 6) & 2) | ((thisByte >> 3) & 1);
-			   SetPixel(bitmapDC, nX, nY+i, convColour(index));
+               index = ((thisByte >> 6) & 2) | ((thisByte >> 3) & 1);
+               SetPixel(bitmapDC, nX, nY+i, convColour(index));
 
-			   index = ((thisByte >> 5) & 2) | ((thisByte >> 2) & 1);
-			   SetPixel(bitmapDC, nX+1, nY+i, convColour(index));
+               index = ((thisByte >> 5) & 2) | ((thisByte >> 2) & 1);
+               SetPixel(bitmapDC, nX+1, nY+i, convColour(index));
 
-			   index = ((thisByte >> 4) & 2) | ((thisByte >> 1) & 1);
-			   SetPixel(bitmapDC, nX+2, nY+i, convColour(index));
+               index = ((thisByte >> 4) & 2) | ((thisByte >> 1) & 1);
+               SetPixel(bitmapDC, nX+2, nY+i, convColour(index));
 
-			   index = ((thisByte >> 3) & 2) | (thisByte & 1);
-			   SetPixel(bitmapDC, nX+3, nY+i, convColour(index));
+               index = ((thisByte >> 3) & 2) | (thisByte & 1);
+               SetPixel(bitmapDC, nX+3, nY+i, convColour(index));
 
-			   address++;
-		   }
+               address++;
+           }
 
-		   nX = nX + 4;
-	   }
-	   nX = 0;
+           nX = nX + 4;
+       }
+       nX = 0;
        nY = nY + 8;
    }
 }
@@ -308,7 +308,7 @@ void BbcScreen::genBitmap2(HDC bitmapDC)
 
    for(k = 0; k < blockRows_; k++) {
       for(j = 0; j < BBC_XBLKS2; j++) {
-	     for(i = 0; i < BLOCK_BYTES; i++) {
+         for(i = 0; i < BLOCK_BYTES; i++) {
             thisByte = screenStorage_[address];
 
             index = ((thisByte >> 4) & 8) | ((thisByte >> 3) & 4) | ((thisByte >> 2) & 2) | ((thisByte >> 1) & 1);
@@ -317,7 +317,7 @@ void BbcScreen::genBitmap2(HDC bitmapDC)
             index = ((thisByte >> 3) & 8) | ((thisByte >> 2) & 4) | ((thisByte >> 1) & 2) | (thisByte  & 1);
             SetPixel(bitmapDC, nX+1, nY+i, convColour(index));
 
-			address++;
+            address++;
          }
          nX = nX + 2;
       }
@@ -328,35 +328,35 @@ void BbcScreen::genBitmap2(HDC bitmapDC)
 
 COLORREF BbcScreen::convColour(int bbcColour)
 {
-	if(bbcColour >= PALETTE_SIZE || bbcColour < 0)
-	{
-		throw std::invalid_argument("Colour out of range");
-	}
-	
-	switch(palette_[bbcColour]) {
-		case 0:
-			return RGB(0, 0, 0);
-		case 1:
-			return RGB(255, 0, 0);
-		case 2:
-			return RGB(0, 255, 0);
-		case 3:
-			return RGB(255, 255, 0);
-		case 4:
-			return RGB(0, 0, 255);
-		case 5:
-			return RGB(255, 0, 255);
-		case 6:
-			return RGB(0, 255, 255);
-		case 7:
-			return RGB(255, 255, 255);
-		default:
-			// Map flashing colours to grey
-			return RGB(128, 128, 128);
-	}
+    if(bbcColour >= PALETTE_SIZE || bbcColour < 0)
+    {
+        throw std::invalid_argument("Colour out of range");
+    }
+
+    switch(palette_[bbcColour]) {
+        case 0:
+            return RGB(0, 0, 0);
+        case 1:
+            return RGB(255, 0, 0);
+        case 2:
+            return RGB(0, 255, 0);
+        case 3:
+            return RGB(255, 255, 0);
+        case 4:
+            return RGB(0, 0, 255);
+        case 5:
+            return RGB(255, 0, 255);
+        case 6:
+            return RGB(0, 255, 255);
+        case 7:
+            return RGB(255, 255, 255);
+        default:
+            // Map flashing colours to grey
+            return RGB(128, 128, 128);
+    }
 }
 
 HBITMAP BbcScreen::getBitmap()
 {
-	return bitmap_;
+    return bitmap_;
 }
