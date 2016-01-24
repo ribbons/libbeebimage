@@ -20,24 +20,11 @@
 
 #include <functional>
 
-#define BBC_WIDTH0   640   // width of BBC MODE0 screen
-#define BBC_WIDTH1   320   //       "      MODE1   "
-#define BBC_WIDTH2   160   //       "      MODE2   "
-#define BBC_WIDTH4   320   //       "      MODE4   "
-#define BBC_WIDTH5   160   //       "      MODE5   "
-#define BBC_XBLKS0   80    // Horizontal blocks on MODE 0 screen
-#define BBC_XBLKS1   80    //           "          MODE 1   "
-#define BBC_XBLKS2   80    //           "          MODE 2   "
-#define BBC_XBLKS4   40    //           "          MODE 4   "
-#define BBC_XBLKS5   40    //           "          MODE 5   "
-#define BLOCK_BYTES  8     // number bytes in a block
-#define PALETTE_SIZE 16    // Size of the BBC palette
-#define DEFAULT_MODE 1     // Default screen mode
-#define MAX_MEMSIZE  40960 // Screen memory size for modes 4 & 5
-
 class BbcScreen
 {
 public:
+    static const int PALETTE_SIZE = 16; // Size of the BBC palette
+
     typedef std::function<void(int x, int y, unsigned long colour)> DrawPixel;
 
     BbcScreen(int screenMemSize);

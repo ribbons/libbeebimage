@@ -20,6 +20,15 @@
 
 #include "BbcScreen.h"
 
+const int BLOCK_BYTES  = 8;     // Number bytes in a block
+const int WIDTH0       = 640;   // Width of BBC MODE 0 screen
+const int WIDTH14      = 320;   // Width of BBC MODE 1 & 4 screens
+const int WIDTH25      = 160;   // Width of BBC MODE 2 & 5 screens
+const int XBLKS012     = 80;    // Horizontal blocks in MODE 0, 1 & 2 screens
+const int XBLKS45      = 40;    // Horizontal blocks in MODE 4 & 5 screens
+const int DEFAULT_MODE = 1;
+const int MAX_MEMSIZE  = 40960;
+
 BbcScreen::BbcScreen(int screenMemSize)
 {
     if(screenMemSize > MAX_MEMSIZE)
@@ -60,24 +69,24 @@ void BbcScreen::setMode(int mode)
     switch(mode_)
     {
         case 0:
-            screenWidth_ = BBC_WIDTH0;
-            blockRows_ = blocksInFile / BBC_XBLKS0;
+            screenWidth_ = WIDTH0;
+            blockRows_ = blocksInFile / XBLKS012;
             break;
         case 1:
-            screenWidth_ = BBC_WIDTH1;
-            blockRows_ = blocksInFile / BBC_XBLKS1;
+            screenWidth_ = WIDTH14;
+            blockRows_ = blocksInFile / XBLKS012;
             break;
         case 2:
-            screenWidth_ = BBC_WIDTH2;
-            blockRows_ = blocksInFile / BBC_XBLKS2;
+            screenWidth_ = WIDTH25;
+            blockRows_ = blocksInFile / XBLKS012;
             break;
         case 4:
-            screenWidth_ = BBC_WIDTH4;
-            blockRows_ = blocksInFile / BBC_XBLKS4;
+            screenWidth_ = WIDTH14;
+            blockRows_ = blocksInFile / XBLKS45;
             break;
         case 5:
-            screenWidth_ = BBC_WIDTH5;
-            blockRows_ = blocksInFile / BBC_XBLKS5;
+            screenWidth_ = WIDTH25;
+            blockRows_ = blocksInFile / XBLKS45;
             break;
     }
 
@@ -188,10 +197,10 @@ void BbcScreen::draw04(DrawPixel callback)
    unsigned int index;
    int nX = 0;
    int nY = 0;
-   int nBlocks = BBC_XBLKS0;
+   int nBlocks = XBLKS012;
 
    if(mode_ == 4) {
-      nBlocks = BBC_XBLKS4;
+      nBlocks = XBLKS45;
    }
 
    int address = 0;
@@ -230,10 +239,10 @@ void BbcScreen::draw15(DrawPixel callback)
    unsigned char index;
    int nX = 0;
    int nY = 0;
-   int nBlocks = BBC_XBLKS1;
+   int nBlocks = XBLKS012;
 
    if(mode_ == 5) {
-      nBlocks = BBC_XBLKS5;
+      nBlocks = XBLKS45;
    }
 
    int address = 0;
@@ -280,7 +289,7 @@ void BbcScreen::draw2(DrawPixel callback)
    int address = 0;
 
    for(k = 0; k < blockRows_; k++) {
-      for(j = 0; j < BBC_XBLKS2; j++) {
+      for(j = 0; j < XBLKS012; j++) {
          for(i = 0; i < BLOCK_BYTES; i++) {
             thisByte = screenStorage_[address];
 
