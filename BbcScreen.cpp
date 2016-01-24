@@ -1,6 +1,6 @@
 /*
  * This file is part of BBC Graphics Viewer.
- * Copyright © 2003-2010 by the authors - see the AUTHORS file for details.
+ * Copyright © 2003-2016 by the authors - see the AUTHORS file for details.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "stdafx.h"
+#include <stdexcept>
+
 #include "BbcScreen.h"
 
 BbcScreen::BbcScreen(int screenMemSize)
@@ -35,7 +36,6 @@ BbcScreen::BbcScreen(int screenMemSize)
         screenStorage_[init] = 0;
     }
 
-    bitmap_ = NULL;
     setMode(DEFAULT_MODE);
 }
 
@@ -43,12 +43,6 @@ BbcScreen::~BbcScreen()
 {
     // Free up the screen storage
     delete []screenStorage_;
-
-    if(bitmap_ != NULL)
-    {
-        // Clean up the bitmap
-        DeleteBitmap(bitmap_);
-    }
 }
 
 void BbcScreen::setMode(int mode)
@@ -168,47 +162,26 @@ unsigned char BbcScreen::getColour(unsigned char colour)
     return palette_[colour];
 }
 
-void BbcScreen::generateBitmap(HWND hWnd)
+void BbcScreen::draw(DrawPixel callback)
 {
-    // Clean up the previous bitmap if there is one
-    if(bitmap_ != NULL)
-    {
-        DeleteBitmap(bitmap_);
-    }
-
-    // Get the handle of the screen DC & create a compatible bitmap
-    HDC screenDC = GetDC(hWnd);
-    bitmap_ = CreateCompatibleBitmap(screenDC, screenWidth_, screenHeight_);
-
-    // Create a DC for the bitmap & release the screen DC
-    HDC bitmapDC = CreateCompatibleDC(screenDC);
-    ReleaseDC(hWnd, screenDC);
-
-    // Save handle of the old bitmap & select new bitmap
-    HBITMAP oldBitmap = SelectBitmap(bitmapDC, bitmap_);
-
     switch(mode_)
     {
         case 0:
         case 4:
-            genBitmap04(bitmapDC);
+            draw04(callback);
             break;
         case 1:
         case 5:
-            genBitmap15(bitmapDC);
+            draw15(callback);
             break;
         case 2:
-            genBitmap2(bitmapDC);
+            draw2(callback);
             break;
     }
-
-    // Select the previous bitmap & release the DC
-    SelectBitmap(bitmapDC, oldBitmap);
-    DeleteDC(bitmapDC);
 }
 
 // MODE 0 or MODE 4 picture
-void BbcScreen::genBitmap04(HDC bitmapDC)
+void BbcScreen::draw04(DrawPixel callback)
 {
    int bit, i, j, k;
    unsigned char thisByte;
@@ -234,7 +207,7 @@ void BbcScreen::genBitmap04(HDC bitmapDC)
                for(bit = 0; bit < 8; bit++)
                {
                    index = thisByte & 1;
-                   SetPixel(bitmapDC, (nX+7)-bit, nY+i, convColour(index));
+                   callback((nX+7)-bit, nY+i, getColour(index));
                    thisByte = thisByte >> 1;
                }
 
@@ -250,7 +223,7 @@ void BbcScreen::genBitmap04(HDC bitmapDC)
 }
 
 // MODE 1 or MODE 5 picture
-void BbcScreen::genBitmap15(HDC bitmapDC)
+void BbcScreen::draw15(DrawPixel callback)
 {
    int i, j, k;
    unsigned char thisByte;
@@ -274,16 +247,16 @@ void BbcScreen::genBitmap15(HDC bitmapDC)
                thisByte = screenStorage_[address];
 
                index = ((thisByte >> 6) & 2) | ((thisByte >> 3) & 1);
-               SetPixel(bitmapDC, nX, nY+i, convColour(index));
+               callback(nX, nY+i, getColour(index));
 
                index = ((thisByte >> 5) & 2) | ((thisByte >> 2) & 1);
-               SetPixel(bitmapDC, nX+1, nY+i, convColour(index));
+               callback(nX+1, nY+i, getColour(index));
 
                index = ((thisByte >> 4) & 2) | ((thisByte >> 1) & 1);
-               SetPixel(bitmapDC, nX+2, nY+i, convColour(index));
+               callback(nX+2, nY+i, getColour(index));
 
                index = ((thisByte >> 3) & 2) | (thisByte & 1);
-               SetPixel(bitmapDC, nX+3, nY+i, convColour(index));
+               callback(nX+3, nY+i, getColour(index));
 
                address++;
            }
@@ -296,7 +269,7 @@ void BbcScreen::genBitmap15(HDC bitmapDC)
 }
 
 // MODE 2 picture
-void BbcScreen::genBitmap2(HDC bitmapDC)
+void BbcScreen::draw2(DrawPixel callback)
 {
    int i, j, k;
    unsigned char thisByte;
@@ -312,10 +285,10 @@ void BbcScreen::genBitmap2(HDC bitmapDC)
             thisByte = screenStorage_[address];
 
             index = ((thisByte >> 4) & 8) | ((thisByte >> 3) & 4) | ((thisByte >> 2) & 2) | ((thisByte >> 1) & 1);
-            SetPixel(bitmapDC, nX, nY+i, convColour(index));
+            callback(nX, nY+i, getColour(index));
 
             index = ((thisByte >> 3) & 8) | ((thisByte >> 2) & 4) | ((thisByte >> 1) & 2) | (thisByte  & 1);
-            SetPixel(bitmapDC, nX+1, nY+i, convColour(index));
+            callback(nX+1, nY+i, getColour(index));
 
             address++;
          }
@@ -324,39 +297,4 @@ void BbcScreen::genBitmap2(HDC bitmapDC)
       nX = 0;
       nY = nY + 8;
    }
-}
-
-COLORREF BbcScreen::convColour(int bbcColour)
-{
-    if(bbcColour >= PALETTE_SIZE || bbcColour < 0)
-    {
-        throw std::invalid_argument("Colour out of range");
-    }
-
-    switch(palette_[bbcColour]) {
-        case 0:
-            return RGB(0, 0, 0);
-        case 1:
-            return RGB(255, 0, 0);
-        case 2:
-            return RGB(0, 255, 0);
-        case 3:
-            return RGB(255, 255, 0);
-        case 4:
-            return RGB(0, 0, 255);
-        case 5:
-            return RGB(255, 0, 255);
-        case 6:
-            return RGB(0, 255, 255);
-        case 7:
-            return RGB(255, 255, 255);
-        default:
-            // Map flashing colours to grey
-            return RGB(128, 128, 128);
-    }
-}
-
-HBITMAP BbcScreen::getBitmap()
-{
-    return bitmap_;
 }

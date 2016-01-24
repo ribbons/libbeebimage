@@ -1,6 +1,6 @@
 /*
  * This file is part of BBC Graphics Viewer.
- * Copyright © 2003-2010 by the authors - see the AUTHORS file for details.
+ * Copyright © 2003-2016 by the authors - see the AUTHORS file for details.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
  */
 
 #pragma once
+
+#include <functional>
 
 #define BBC_WIDTH0   640   // width of BBC MODE0 screen
 #define BBC_WIDTH1   320   //       "      MODE1   "
@@ -35,22 +37,9 @@
 
 class BbcScreen
 {
-private:
-    int screenMemSize_;
-    int screenWidth_;
-    int screenHeight_;
-    int blockRows_;
-    unsigned char mode_;
-    unsigned char palette_[PALETTE_SIZE];
-    unsigned char* screenStorage_;
-    HBITMAP bitmap_;
-
-    void genBitmap04(HDC bitmapDC);
-    void genBitmap15(HDC bitmapDC);
-    void genBitmap2(HDC bitmapDC);
-    COLORREF convColour(int bbcColour);
-
 public:
+    typedef std::function<void(int x, int y, unsigned long colour)> DrawPixel;
+
     BbcScreen(int screenMemSize);
     ~BbcScreen();
     void setMode(int mode);
@@ -60,6 +49,18 @@ public:
     int getScreenHeight();
     void setColour(unsigned char colour, unsigned char value);
     unsigned char getColour(unsigned char colour);
-    void generateBitmap(HWND hWnd);
-    HBITMAP getBitmap();
+    void draw(DrawPixel callback);
+
+private:
+    int screenMemSize_;
+    int screenWidth_;
+    int screenHeight_;
+    int blockRows_;
+    unsigned char mode_;
+    unsigned char palette_[PALETTE_SIZE];
+    unsigned char* screenStorage_;
+
+    void draw04(DrawPixel callback);
+    void draw15(DrawPixel callback);
+    void draw2(DrawPixel callback);
 };
