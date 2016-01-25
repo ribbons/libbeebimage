@@ -46,7 +46,7 @@ BbcScreen::BbcScreen(int screenMemSize)
     setMode(DEFAULT_MODE);
 }
 
-void BbcScreen::setMode(int mode)
+void BbcScreen::setMode(uint8_t mode)
 {
     mode = mode % 8;
 
@@ -55,7 +55,7 @@ void BbcScreen::setMode(int mode)
         throw std::invalid_argument("modes 3, 6 and 7 are not supported");
     }
 
-    mode_ = (unsigned char)mode;
+    mode_ = mode;
     int blocksInFile = screenMemSize_ / BLOCK_BYTES;
 
     switch(mode_)
@@ -106,19 +106,19 @@ void BbcScreen::setMode(int mode)
             palette_[3] = 7;
             break;
         case 2:
-            for(unsigned char i = 0; i < 8; i++) {
+            for(uint8_t i = 0; i < 8; i++) {
                 palette_[i] = i;
             }
             break;
     }
 }
 
-unsigned char BbcScreen::getMode()
+uint8_t BbcScreen::getMode()
 {
     return mode_;
 }
 
-void BbcScreen::setScreenByte(int address, unsigned char byte)
+void BbcScreen::setScreenByte(int address, uint8_t byte)
 {
     if(address >= screenMemSize_)
     {
@@ -138,7 +138,7 @@ int BbcScreen::getScreenHeight()
     return screenHeight_;
 }
 
-void BbcScreen::setColour(unsigned char colour, unsigned char value)
+void BbcScreen::setColour(uint8_t colour, uint8_t value)
 {
     if(colour >= PALETTE_SIZE || colour < 0)
     {
@@ -153,7 +153,7 @@ void BbcScreen::setColour(unsigned char colour, unsigned char value)
     palette_[colour] = value;
 }
 
-unsigned char BbcScreen::getColour(unsigned char colour)
+uint8_t BbcScreen::getColour(uint8_t colour)
 {
     if(colour >= PALETTE_SIZE || colour < 0)
     {
@@ -185,8 +185,8 @@ void BbcScreen::draw(DrawPixel callback)
 void BbcScreen::draw04(DrawPixel callback)
 {
    int bit, i, j, k;
-   unsigned char thisByte;
-   unsigned int index;
+   uint8_t thisByte;
+   uint8_t index;
    int nX = 0;
    int nY = 0;
    int nBlocks = XBLKS012;
@@ -227,8 +227,8 @@ void BbcScreen::draw04(DrawPixel callback)
 void BbcScreen::draw15(DrawPixel callback)
 {
    int i, j, k;
-   unsigned char thisByte;
-   unsigned char index;
+   uint8_t thisByte;
+   uint8_t index;
    int nX = 0;
    int nY = 0;
    int nBlocks = XBLKS012;
@@ -273,8 +273,8 @@ void BbcScreen::draw15(DrawPixel callback)
 void BbcScreen::draw2(DrawPixel callback)
 {
    int i, j, k;
-   unsigned char thisByte;
-   unsigned char index;
+   uint8_t thisByte;
+   uint8_t index;
    int nX = 0;
    int nY = 0;
 
