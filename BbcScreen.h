@@ -23,12 +23,12 @@
 class BbcScreen
 {
 public:
-    static const int PALETTE_SIZE = 16; // Size of the BBC palette
+    static const int PALETTE_SIZE = 16;    // Size of the BBC palette
+    static const int MAX_MEMSIZE  = 40960; // Size of screen memory storage
 
     typedef std::function<void(int x, int y, unsigned long colour)> DrawPixel;
 
     BbcScreen(int screenMemSize);
-    ~BbcScreen();
     void setMode(int mode);
     unsigned char getMode();
     void setScreenByte(int address, unsigned char byte);
@@ -45,7 +45,7 @@ private:
     int blockRows_;
     unsigned char mode_;
     unsigned char palette_[PALETTE_SIZE];
-    unsigned char* screenStorage_;
+    unsigned char screenStorage_[MAX_MEMSIZE];
 
     void draw04(DrawPixel callback);
     void draw15(DrawPixel callback);

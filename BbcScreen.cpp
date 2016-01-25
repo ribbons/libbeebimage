@@ -27,7 +27,6 @@ const int WIDTH25      = 160;   // Width of BBC MODE 2 & 5 screens
 const int XBLKS012     = 80;    // Horizontal blocks in MODE 0, 1 & 2 screens
 const int XBLKS45      = 40;    // Horizontal blocks in MODE 4 & 5 screens
 const int DEFAULT_MODE = 1;
-const int MAX_MEMSIZE  = 40960;
 
 BbcScreen::BbcScreen(int screenMemSize)
 {
@@ -37,7 +36,6 @@ BbcScreen::BbcScreen(int screenMemSize)
     }
 
     screenMemSize_ = screenMemSize;
-    screenStorage_ = new unsigned char[screenMemSize];
 
     // Initialise the screen memory to all zeros (to match BBC)
     for(int init = 0; init < screenMemSize; init++)
@@ -46,12 +44,6 @@ BbcScreen::BbcScreen(int screenMemSize)
     }
 
     setMode(DEFAULT_MODE);
-}
-
-BbcScreen::~BbcScreen()
-{
-    // Free up the screen storage
-    delete []screenStorage_;
 }
 
 void BbcScreen::setMode(int mode)
