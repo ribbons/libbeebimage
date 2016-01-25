@@ -43,7 +43,7 @@ private:
     int screenWidth_;
     int screenHeight_;
     int blockRows_;
-    uint8_t mode_;
+    uint8_t mode_ = 1;
     uint8_t palette_[PALETTE_SIZE];
     uint8_t screenStorage_[MAX_MEMSIZE];
 
