@@ -140,12 +140,12 @@ int BbcScreen::getScreenHeight()
 
 void BbcScreen::setColour(uint8_t colour, uint8_t value)
 {
-    if(colour >= PALETTE_SIZE || colour < 0)
+    if(colour >= PALETTE_SIZE)
     {
         throw std::invalid_argument("Colour out of range");
     }
 
-    if(value >= PALETTE_SIZE || value < 0)
+    if(value >= PALETTE_SIZE)
     {
         throw std::invalid_argument("Value out of range");
     }
@@ -155,7 +155,7 @@ void BbcScreen::setColour(uint8_t colour, uint8_t value)
 
 uint8_t BbcScreen::getColour(uint8_t colour)
 {
-    if(colour >= PALETTE_SIZE || colour < 0)
+    if(colour >= PALETTE_SIZE)
     {
         throw std::invalid_argument("Colour out of range");
     }
