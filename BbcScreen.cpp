@@ -1,5 +1,5 @@
 /*
- * This file is part of BBC Graphics Viewer.
+ * This file is part of libbeebimage.
  * Copyright © 2003-2016 by the authors - see the AUTHORS file for details.
  *
  * This program is free software: you can redistribute it and/or modify
