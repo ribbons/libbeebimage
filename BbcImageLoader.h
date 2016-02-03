@@ -18,21 +18,35 @@
 
 #pragma once
 
+#include <stdint.h>
+
 #include "BbcScreen.h"
 
-class BbcImageLoader
-{
-public:
-    BbcImageLoader(uint8_t *data, int size);
-    BbcScreen* LoadAuto();
-    BbcScreen* LoadMemDump();
-    BbcScreen* LoadLdPic();
+#ifdef __cplusplus
+    class BbcImageLoader
+    {
+    public:
+        BbcImageLoader(uint8_t *data, int size);
+        BbcScreen* LoadAuto();
+        BbcScreen* LoadMemDump();
+        BbcScreen* LoadLdPic();
 
-private:
-    bool getBitFromFile(bool flushStore, uint8_t *fileBit);
-    bool getBitsFromFile(int numBits, bool flushStore, uint8_t *fileBits);
+    private:
+        bool getBitFromFile(bool flushStore, uint8_t *fileBit);
+        bool getBitsFromFile(int numBits, bool flushStore, uint8_t *fileBits);
 
-    uint8_t *data;
-    int size;
-    int pos = 0;
-};
+        uint8_t *data;
+        int size;
+        int pos = 0;
+    };
+
+    extern "C" {
+#endif
+
+    BbcScreenP BbcImageLoader_LoadAuto(uint8_t *data, int size);
+    BbcScreenP BbcImageLoader_LoadMemDump(uint8_t *data, int size);
+    BbcScreenP BbcImageLoader_LoadLdPic(uint8_t *data, int size);
+
+#ifdef __cplusplus
+    }
+#endif

@@ -22,8 +22,8 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 add_library(beebimage STATIC
-            BbcScreen.h BbcScreen.cpp
-            BbcImageLoader.h BbcImageLoader.cpp)
+            BbcScreen.h BbcScreen.cpp BbcScreenC.cpp
+            BbcImageLoader.h BbcImageLoader.cpp BbcImageLoaderC.cpp)
 
 install(TARGETS beebimage
         DESTINATION lib)
