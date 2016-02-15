@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cstring>
 #include <stdexcept>
 
 #include "BbcScreen.h"
@@ -27,7 +28,7 @@ const int WIDTH25      = 160;   // Width of BBC MODE 2 & 5 screens
 const int XBLKS012     = 80;    // Horizontal blocks in MODE 0, 1 & 2 screens
 const int XBLKS45      = 40;    // Horizontal blocks in MODE 4 & 5 screens
 
-BbcScreen::BbcScreen(int screenMemSize)
+void BbcScreen::init(int screenMemSize)
 {
     if(screenMemSize > MAX_MEMSIZE)
     {
@@ -35,14 +36,24 @@ BbcScreen::BbcScreen(int screenMemSize)
     }
 
     screenMemSize_ = screenMemSize;
+    setMode(mode_);
+}
+
+BbcScreen::BbcScreen(int screenMemSize)
+{
+    init(screenMemSize);
 
     // Initialise the screen memory to all zeros (to match BBC)
     for(int init = 0; init < screenMemSize; init++)
     {
         screenStorage_[init] = 0;
     }
+}
 
-    setMode(mode_);
+BbcScreen::BbcScreen(int screenMemSize, uint8_t *screenData)
+{
+    init(screenMemSize);
+    memcpy(screenStorage_, screenData, screenMemSize);
 }
 
 void BbcScreen::setMode(uint8_t mode)

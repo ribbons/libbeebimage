@@ -50,6 +50,19 @@ BbcScreenP BbcScreen_create(int screenMemSize)
     }
 }
 
+BbcScreenP BbcScreen_create2(int screenMemSize, uint8_t *screenData)
+{
+    try
+    {
+        return reinterpret_cast<BbcScreenP>(new BbcScreen(screenMemSize, screenData));
+    }
+    catch(...)
+    {
+        PrintException();
+        std::terminate();
+    }
+}
+
 void BbcScreen_delete(BbcScreenP screen)
 {
     try

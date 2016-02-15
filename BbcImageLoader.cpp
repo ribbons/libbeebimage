@@ -48,14 +48,7 @@ BbcScreen* BbcImageLoader::LoadAuto()
 
 BbcScreen* BbcImageLoader::LoadMemDump()
 {
-    BbcScreen *screen = new BbcScreen(this->size);
-
-    for(this->pos = 0; this->pos < this->size; this->pos++)
-    {
-        screen->setScreenByte(this->pos, this->data[this->pos]);
-    }
-
-    return screen;
+    return new BbcScreen(this->size, this->data);
 }
 
 BbcScreen* BbcImageLoader::LoadLdPic()

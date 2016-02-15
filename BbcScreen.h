@@ -36,6 +36,8 @@
         typedef std::function<void(int x, int y, uint8_t colour)> DrawPixel;
 
         BbcScreen(int screenMemSize);
+        BbcScreen(int screenMemSize, uint8_t *screenData);
+
         void setMode(uint8_t mode);
         uint8_t getMode();
         void setScreenByte(int address, uint8_t byte);
@@ -54,6 +56,7 @@
         uint8_t palette_[PALETTE_SIZE];
         uint8_t screenStorage_[MAX_MEMSIZE];
 
+        void init(int screenMemSize);
         void draw04(DrawPixel callback);
         void draw15(DrawPixel callback);
         void draw2(DrawPixel callback);
@@ -66,6 +69,7 @@
     typedef void (*DrawPixelP)(int x, int y, uint8_t colour);
 
     BbcScreenP BbcScreen_create(int screenMemSize);
+    BbcScreenP BbcScreen_create2(int screenMemSize, uint8_t *screenData);
     void BbcScreen_delete(BbcScreenP screen);
     void BbcScreen_setMode(BbcScreenP screen, uint8_t mode);
     uint8_t BbcScreen_getMode(BbcScreenP screen);
