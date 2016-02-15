@@ -72,7 +72,7 @@ BbcScreen* BbcImageLoader::LoadLdPic()
     this->pos = 0;
 
     // Read the number of bits to read for each image byte
-    if(!getBitsFromFile(8, true, &outValBitSize))
+    if(!getBits(8, &outValBitSize))
     {
         return NULL;
     }
@@ -85,7 +85,7 @@ BbcScreen* BbcImageLoader::LoadLdPic()
     }
 
     // Read the mode from the file
-    if(!getBitsFromFile(8, false, &mode))
+    if(!getBits(8, &mode))
     {
         return NULL;
     }
@@ -115,7 +115,7 @@ BbcScreen* BbcImageLoader::LoadLdPic()
     // Read the colour mappings from the file
     for(int8_t readPal = BbcScreen::PALETTE_SIZE - 1; readPal >= 0; readPal--)
     {
-        if(!getBitsFromFile(4, false, &colMapping))
+        if(!getBits(4, &colMapping))
         {
             delete screen;
             return NULL;
@@ -125,7 +125,7 @@ BbcScreen* BbcImageLoader::LoadLdPic()
     }
 
     // Read the number of bytes to move forward by after each byte is written to memory
-    if(!getBitsFromFile(8, false, &stepSize))
+    if(!getBits(8, &stepSize))
     {
         delete screen;
         return NULL;
@@ -139,7 +139,7 @@ BbcScreen* BbcImageLoader::LoadLdPic()
     }
 
     // Fetch the number of bits to read for each repeat count
-    if(!getBitsFromFile(8, false, &repCountBits))
+    if(!getBits(8, &repCountBits))
     {
         delete screen;
         return NULL;
@@ -161,7 +161,7 @@ BbcScreen* BbcImageLoader::LoadLdPic()
     {
         // The next bit of the file shows whether to read just a single
         // value, or to read the number of repeats and a value
-        if(!getBitFromFile(false, &readMode))
+        if(!getBit(&readMode))
         {
             // Unexpected end of file
             delete screen;
@@ -176,7 +176,7 @@ BbcScreen* BbcImageLoader::LoadLdPic()
         else
         {
             // Fetch the number of times the value should be repeated
-            if(!getBitsFromFile(repCountBits, false, &repeatCount))
+            if(!getBits(repCountBits, &repeatCount))
             {
                 // Unexpected end of file
                 delete screen;
@@ -192,7 +192,7 @@ BbcScreen* BbcImageLoader::LoadLdPic()
         }
 
         // Now fetch the value itself
-        if(!getBitsFromFile(outValBitSize, false, &valToRepeat))
+        if(!getBits(outValBitSize, &valToRepeat))
         {
             // Unexpected end of file
             delete screen;
@@ -232,35 +232,25 @@ BbcScreen* BbcImageLoader::LoadLdPic()
     }
 }
 
-bool BbcImageLoader::getBitFromFile(bool flushStore, uint8_t *fileBit)
+bool BbcImageLoader::getBit(uint8_t *bit)
 {
-    static uint8_t byteStore;
-    static int bitsLeft = 0;
-
-    if(flushStore)
-    {
-        // Clear the count of remaining bits
-        bitsLeft = 0;
-    }
-
     if(bitsLeft == 0)
     {
-        // Fetch a byte from the file
         if(this->pos == this->size)
         {
             // End of data
             return false;
         }
 
-        byteStore = this->data[this->pos++];
+        bitStore = this->data[this->pos++];
         bitsLeft = 8;
     }
 
     // Fetch the leftmost bit
-    *fileBit = (byteStore & 128) >> 7;
+    *bit = (bitStore & 128) >> 7;
 
-    // Shift the remaining bits one place left
-    byteStore = byteStore << 1;
+    // Shift the remaining bits across
+    bitStore <<= 1;
 
     // Decrement the bytes left counter
     bitsLeft --;
@@ -268,9 +258,9 @@ bool BbcImageLoader::getBitFromFile(bool flushStore, uint8_t *fileBit)
     return true;
 }
 
-bool BbcImageLoader::getBitsFromFile(int numBits, bool flushStore, uint8_t *fileBits)
+bool BbcImageLoader::getBits(int numBits, uint8_t *bits)
 {
-    *fileBits = 0;
+    *bits = 0;
     uint8_t addBit;
 
     // Must be between 1 and 8 bits that have been asked for
@@ -282,24 +272,18 @@ bool BbcImageLoader::getBitsFromFile(int numBits, bool flushStore, uint8_t *file
     for(int bitCount = 0; bitCount < 8; bitCount++)
     {
         // Shift the bits in the byte one place to the right
-        *fileBits = *fileBits >> 1;
+        *bits >>= 1;
 
         if(bitCount < numBits)
         {
-            if(!getBitFromFile(flushStore, &addBit))
+            if(!getBit(&addBit))
             {
                 // End of file
                 return false;
             }
 
-            if(flushStore)
-            {
-                // The store has now been flushed, so reset the flag
-                flushStore = false;
-            }
-
             // Insert the returned bit as the msb of the byte
-            *fileBits = *fileBits | addBit << 7;
+            *bits |= addBit << 7;
         }
     }
 

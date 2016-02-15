@@ -32,12 +32,15 @@
         BbcScreen* LoadLdPic();
 
     private:
-        bool getBitFromFile(bool flushStore, uint8_t *fileBit);
-        bool getBitsFromFile(int numBits, bool flushStore, uint8_t *fileBits);
+        bool getBit(uint8_t *bit);
+        bool getBits(int numBits, uint8_t *bits);
 
         uint8_t *data;
         int size;
         int pos = 0;
+
+        uint8_t bitStore;
+        int bitsLeft = 0;
     };
 
     extern "C" {
