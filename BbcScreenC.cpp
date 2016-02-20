@@ -109,7 +109,21 @@ void BbcScreen_setScreenByte(BbcScreenP screen, int address, uint8_t byte)
     try
     {
         BbcScreen *screenPtr = reinterpret_cast<BbcScreen*>(screen);
-        return screenPtr->setScreenByte(address, byte);
+        screenPtr->setScreenByte(address, byte);
+    }
+    catch(...)
+    {
+        PrintException();
+        std::terminate();
+    }
+}
+
+uint8_t BbcScreen_getScreenByte(BbcScreenP screen, int address)
+{
+    try
+    {
+        BbcScreen *screenPtr = reinterpret_cast<BbcScreen*>(screen);
+        return screenPtr->getScreenByte(address);
     }
     catch(...)
     {

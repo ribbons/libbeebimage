@@ -41,6 +41,7 @@
         void setMode(uint8_t mode);
         uint8_t getMode();
         void setScreenByte(int address, uint8_t byte);
+        uint8_t getScreenByte(int address);
         int getScreenWidth();
         int getScreenHeight();
         void setColour(uint8_t colour, uint8_t value);
@@ -74,6 +75,7 @@
     void BbcScreen_setMode(BbcScreenP screen, uint8_t mode);
     uint8_t BbcScreen_getMode(BbcScreenP screen);
     void BbcScreen_setScreenByte(BbcScreenP screen, int address, uint8_t byte);
+    uint8_t BbcScreen_getScreenByte(BbcScreenP screen, int address);
     int BbcScreen_getScreenWidth(BbcScreenP screen);
     int BbcScreen_getScreenHeight(BbcScreenP screen);
     void BbcScreen_setColour(BbcScreenP screen, uint8_t colour, uint8_t value);

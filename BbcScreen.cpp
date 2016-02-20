@@ -139,6 +139,16 @@ void BbcScreen::setScreenByte(int address, uint8_t byte)
     screenStorage_[address] = byte;
 }
 
+uint8_t BbcScreen::getScreenByte(int address)
+{
+    if(address >= screenMemSize_)
+    {
+        throw std::invalid_argument("address out of bounds");
+    }
+
+    return screenStorage_[address];
+}
+
 int BbcScreen::getScreenWidth()
 {
     return screenWidth_;
