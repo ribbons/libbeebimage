@@ -116,7 +116,8 @@ void BbcScreen::setMode(uint8_t mode)
             palette_[3] = 7;
             break;
         case 2:
-            for(uint8_t i = 0; i < 8; i++) {
+            for(uint8_t i = 0; i < PALETTE_SIZE; i++)
+            {
                 palette_[i] = i;
             }
             break;
