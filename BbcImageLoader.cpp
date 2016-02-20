@@ -282,3 +282,65 @@ bool BbcImageLoader::getBits(int numBits, uint8_t *bits)
 
     return true;
 }
+
+BbcScreen* BbcImageLoader::LoadScrLoad()
+{
+    this->pos = 0;
+    int screenSize = 0;
+    int repeatCount;
+
+    for(;;)
+    {
+        if(++this->pos == this->size)
+        {
+            // Unexpected EOF
+            return NULL;
+        }
+
+        repeatCount = this->data[this->pos++];
+
+        if(repeatCount == 0)
+        {
+            screenSize += 256;
+        }
+        else
+        {
+            screenSize += repeatCount;
+        }
+
+        if(this->pos == this->size)
+        {
+            // EOF
+            break;
+        }
+    }
+
+    BbcScreen *screen = new BbcScreen(screenSize);
+
+    uint8_t valToRepeat;
+    int address = 0;
+    this->pos = 0;
+
+    for(;;)
+    {
+        valToRepeat = this->data[this->pos++];
+        repeatCount = this->data[this->pos++];
+
+        if(repeatCount == 0)
+        {
+            repeatCount = 256;
+        }
+
+        for(int i = 0; i < repeatCount; i++)
+        {
+            screen->setScreenByte(address++, valToRepeat);
+        }
+
+        if(this->pos == this->size)
+        {
+            break;
+        }
+    }
+
+    return screen;
+}

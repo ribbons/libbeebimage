@@ -30,6 +30,7 @@
         BbcScreen* LoadAuto();
         BbcScreen* LoadMemDump();
         BbcScreen* LoadLdPic();
+        BbcScreen* LoadScrLoad();
 
     private:
         bool getBit(uint8_t *bit);
@@ -49,6 +50,7 @@
     BbcScreenP BbcImageLoader_LoadAuto(uint8_t *data, int size);
     BbcScreenP BbcImageLoader_LoadMemDump(uint8_t *data, int size);
     BbcScreenP BbcImageLoader_LoadLdPic(uint8_t *data, int size);
+    BbcScreenP BbcImageLoader_LoadScrLoad(uint8_t *data, int size);
 
 #ifdef __cplusplus
     }

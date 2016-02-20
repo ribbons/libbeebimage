@@ -63,3 +63,17 @@ BbcScreenP BbcImageLoader_LoadLdPic(uint8_t *data, int size)
         std::terminate();
     }
 }
+
+BbcScreenP BbcImageLoader_LoadScrLoad(uint8_t *data, int size)
+{
+    try
+    {
+        BbcImageLoader loader(data, size);
+        return reinterpret_cast<BbcScreenP>(loader.LoadScrLoad());
+    }
+    catch(...)
+    {
+        PrintException();
+        std::terminate();
+    }
+}
