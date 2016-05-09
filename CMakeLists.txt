@@ -27,8 +27,10 @@ add_library(beebimage STATIC
             BbcScreen.h BbcScreen.cpp BbcScreenC.cpp
             BbcImageLoader.h BbcImageLoader.cpp BbcImageLoaderC.cpp)
 
-install(TARGETS beebimage
-        DESTINATION lib)
+if(NOT BEEBIMAGE_NO_INSTALL)
+    install(TARGETS beebimage
+            DESTINATION lib)
 
-install(FILES BbcScreen.h BbcImageLoader.h
-        DESTINATION include)
+    install(FILES BbcScreen.h BbcImageLoader.h
+            DESTINATION include)
+endif()
