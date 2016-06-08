@@ -24,7 +24,13 @@ sudo make install
 
 ### Windows
 
-Not yet tested - should be similar to Linux.
+``` sh
+mkdir build
+cd build
+cmake ..
+```
+
+The command to build with under Windows will then depend on your C++ compiler.
 
 Contribute
 ----------

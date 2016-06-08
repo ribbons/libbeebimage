@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdexcept>
+
 #include "BbcImageLoader.h"
 
 const int MEMSIZE012 = 20480; // Screen memory size for modes 0, 1 & 2
