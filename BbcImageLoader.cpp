@@ -1,6 +1,6 @@
 /*
  * This file is part of libbeebimage.
- * Copyright © 2003-2016 by the authors - see the AUTHORS file for details.
+ * Copyright © 2003-2021 by the authors - see the AUTHORS file for details.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -289,7 +289,6 @@ BbcScreen* BbcImageLoader::LoadScrLoad()
 {
     this->pos = 0;
     int screenSize = 0;
-    int repeatCount;
 
     for(;;)
     {
@@ -299,7 +298,7 @@ BbcScreen* BbcImageLoader::LoadScrLoad()
             return NULL;
         }
 
-        repeatCount = this->data[this->pos++];
+        int repeatCount = this->data[this->pos++];
 
         if(repeatCount == 0)
         {
@@ -319,14 +318,13 @@ BbcScreen* BbcImageLoader::LoadScrLoad()
 
     BbcScreen *screen = new BbcScreen(screenSize);
 
-    uint8_t valToRepeat;
     int address = 0;
     this->pos = 0;
 
     for(;;)
     {
-        valToRepeat = this->data[this->pos++];
-        repeatCount = this->data[this->pos++];
+        uint8_t valToRepeat = this->data[this->pos++];
+        int repeatCount = this->data[this->pos++];
 
         if(repeatCount == 0)
         {
