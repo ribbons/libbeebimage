@@ -1,0 +1,22 @@
+name: CI
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '30 12 * * 5'
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Packages
+        run: sudo apt-get install cppcheck
+
+      - name: Build
+        run: |
+          cmake -S . -B build
+          cmake --build build -t cppcheck
