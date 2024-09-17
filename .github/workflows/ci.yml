@@ -1,5 +1,5 @@
 ---
-# Copyright © 2021-2022 Matt Robinson
+# Copyright © 2021-2024 Matt Robinson
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -10,6 +10,9 @@ on:
   pull_request:
   schedule:
     - cron: '30 12 * * 5'
+
+permissions:
+  contents: read
 
 jobs:
   build:
