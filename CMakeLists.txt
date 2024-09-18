@@ -24,9 +24,3 @@ if(NOT BEEBIMAGE_NO_INSTALL)
 endif()
 
 file(GLOB CPP_FILES *.cpp)
-
-add_custom_target(cppcheck COMMAND cppcheck --quiet --error-exitcode=2
-                  --enable=all --suppress=missingIncludeSystem
-                  --suppress=unusedFunction:*C.cpp --std=c++11
-                  --inline-suppr ${CPP_FILES}
-                  DEPENDS beebimage VERBATIM)

@@ -15,6 +15,28 @@ permissions:
   contents: read
 
 jobs:
+  overcommit:
+    name: Overcommit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cppcheck package
+        run: sudo apt-get install cppcheck
+
+      - name: Install Overcommit and sign
+        run: |
+          sudo gem install overcommit --no-document
+          overcommit --sign
+          overcommit --sign pre-commit
+
+      - name: Run hooks
+        env:
+          GIT_AUTHOR_NAME: Dummy
+          GIT_AUTHOR_EMAIL: dummy@example.com
+        run: overcommit --run
+
   build:
     name: Build and test
     runs-on: ubuntu-latest
@@ -22,10 +44,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Packages
-        run: sudo apt-get install cppcheck
-
       - name: Build
         run: |
           cmake -S . -B build
-          cmake --build build -t cppcheck
+          cmake --build build
