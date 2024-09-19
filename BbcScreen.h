@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include <stdint.h>
+
 #define BBCSCREEN_PALETTE_SIZE 16    // Size of the BBC palette
 #define BBCSCREEN_MAX_MEMSIZE  40960 // Size of screen memory storage
 

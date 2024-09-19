@@ -1,12 +1,10 @@
 /*
- * Copyright © 2010-2021 Matt Robinson
+ * Copyright © 2010-2024 Matt Robinson
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #pragma once
-
-#include <stdint.h>
 
 #include "BbcScreen.h"
 
