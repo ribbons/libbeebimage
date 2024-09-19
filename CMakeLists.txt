@@ -1,8 +1,8 @@
-# Copyright © 2016-2021 Matt Robinson
+# Copyright © 2016-2024 Matt Robinson
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.5)
 project("beebimage")
 
 if(CMAKE_COMPILER_IS_GNUCXX)
