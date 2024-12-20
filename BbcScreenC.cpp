@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 Matt Robinson
+ * Copyright © 2016-2024 Matt Robinson
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -38,7 +38,7 @@ BbcScreenP BbcScreen_create(int screenMemSize)
     }
 }
 
-BbcScreenP BbcScreen_create2(int screenMemSize, uint8_t *screenData)
+BbcScreenP BbcScreen_create2(int screenMemSize, const uint8_t *screenData)
 {
     try
     {

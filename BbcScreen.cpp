@@ -1,6 +1,6 @@
 /*
  * Copyright © 1999-2000 David Robinson
- * Copyright © 2007-2016 Matt Robinson
+ * Copyright © 2007-2024 Matt Robinson
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -33,13 +33,13 @@ BbcScreen::BbcScreen(int screenMemSize)
     init(screenMemSize);
 
     // Initialise the screen memory to all zeros (to match BBC)
-    for(int init = 0; init < screenMemSize; init++)
+    for(int i = 0; i < screenMemSize; i++)
     {
-        screenStorage_[init] = 0;
+        screenStorage_[i] = 0;
     }
 }
 
-BbcScreen::BbcScreen(int screenMemSize, uint8_t *screenData)
+BbcScreen::BbcScreen(int screenMemSize, const uint8_t *screenData)
 {
     init(screenMemSize);
     memcpy(screenStorage_, screenData, screenMemSize);

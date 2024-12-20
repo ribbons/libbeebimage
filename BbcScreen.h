@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010-2021 Matt Robinson
+ * Copyright © 2010-2024 Matt Robinson
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -26,7 +26,7 @@
         typedef std::function<void(int x, int y, uint8_t colour)> DrawPixel;
 
         explicit BbcScreen(int screenMemSize);
-        BbcScreen(int screenMemSize, uint8_t *screenData);
+        BbcScreen(int screenMemSize, const uint8_t *screenData);
 
         void setMode(uint8_t mode);
         uint8_t getMode();
@@ -60,7 +60,7 @@
     typedef void (*DrawPixelP)(int x, int y, uint8_t colour);
 
     BbcScreenP BbcScreen_create(int screenMemSize);
-    BbcScreenP BbcScreen_create2(int screenMemSize, uint8_t *screenData);
+    BbcScreenP BbcScreen_create2(int screenMemSize, const uint8_t *screenData);
     void BbcScreen_delete(BbcScreenP screen);
     void BbcScreen_setMode(BbcScreenP screen, uint8_t mode);
     uint8_t BbcScreen_getMode(BbcScreenP screen);
