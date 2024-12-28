@@ -60,7 +60,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 tag_name: '${{ inputs.version }}',
-                name: '${{context.repo.repo}} ${{ inputs.version }}',
+                name: context.repo.repo + ' ${{ inputs.version }}',
                 body: relnotes,
                 draft: true
             });
