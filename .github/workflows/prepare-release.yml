@@ -46,7 +46,7 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email \
                      41898282+github-actions[bot]@users.noreply.github.com
-          git tag -a -m "${{ inputs.version }} release" "${{ inputs.version }}"
+          git tag -a -m "${{ inputs.version }} release" "v${{ inputs.version }}"
           git push --tags
 
       - name: Create draft release
@@ -59,7 +59,7 @@ jobs:
             await github.rest.repos.createRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                tag_name: '${{ inputs.version }}',
+                tag_name: 'v${{ inputs.version }}',
                 name: context.repo.repo + ' ${{ inputs.version }}',
                 body: relnotes,
                 draft: true
